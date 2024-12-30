@@ -2,13 +2,13 @@ import socket
 import time
 import re
 
-# Connection details
+# connection details
 SERVER_IP = "128.199.83.243"
 QUERY_PORT = 10011  # default 10011
 USERNAME = "Among-Us"  # server query connection
 PASSWORD = "NOzrTyx4"  # server query connection
-TARGET_CHANNEL_ID = 86  # ID of the channel you want to use cmds
-BOT_NICKNAME = "Among-Us"  # nickname of the bot
+TARGET_CHANNEL_ID = 86  # channel id
+BOT_NICKNAME = "Among-Us"  # bot name
 
 current_state = None
 
@@ -18,10 +18,9 @@ def send_command(conn, command):
     return response
 
 def get_bot_client_id(conn, nickname):
-    # handle spaces/special chars
     escaped_nickname = re.escape(nickname)
 
-    # get clients of the server
+    # get clients list
     response = send_command(conn, "clientlist")
     print("Client list response:", response)
 
@@ -43,6 +42,7 @@ def send_message_to_channel(conn, channel_id, message):
 def process_chat_message(conn, message):
     global current_state
 
+    # changeable
     if "Mute" in message and current_state != "Muted":
         talk_power = 100
         action = "Muted"
@@ -56,7 +56,6 @@ def process_chat_message(conn, message):
     else:
         return
 
-    # set talk power & send a message to the channel-chat
     talk_power_command = f"channeledit cid={TARGET_CHANNEL_ID} channel_needed_talk_power={talk_power}"
     talk_power_response = send_command(conn, talk_power_command)
     print(f"Talk power adjustment response: {talk_power_response}")
